@@ -4,6 +4,7 @@ from flask_cors import CORS
 import os
 import recommendation_system_tps as tps_rec
 import recommendation_system_literasi as literasi_rec
+import exp_calculation as exp_calc
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": "*"}})
@@ -29,10 +30,21 @@ class GetRecommendation(Resource):
         except Exception as error:
             return {'error': error}
 
+class ClaculateExp(Resource):
+    def post(self):
+        try:
+            data = request.get_json()
+            answer = data["answer"]
+            exp = exp_calc.calculate_exp(answer)
+            return {'status': 'success', 'data': {'exp': exp}}
+
+        except Exception as error:
+            return {'error': error}
+
 
 api.add_resource(Test, '/')
 api.add_resource(GetRecommendation, '/recommendation')
-# api.add_resource(GetPredictionOutput, '/exp')
+api.add_resource(ClaculateExp, '/exp')
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
