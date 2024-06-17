@@ -1,13 +1,30 @@
-# -*- coding: utf-8 -*-
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import db
 
-link_tps = 'https://raw.githubusercontent.com/Capstone-Buddies/Machine-Learning/main/Dataset/SNBT%20Datasets%20-%20TPS.csv'
-link_answer_history_tps = 'SNBT Datasets - Answer_History_TPS.csv'
+# link_tps = 'https://raw.githubusercontent.com/Capstone-Buddies/Machine-Learning/main/Dataset/SNBT%20Datasets%20-%20TPS.csv'
+# link_answer_history_tps = 'SNBT Datasets - Answer_History_TPS.csv'
 
-user_history = pd.read_csv(link_answer_history_tps)
-tps_question_data = pd.read_csv(link_tps)
+# user_history = pd.read_csv(link_answer_history_tps)
+# tps_question_data = pd.read_csv(link_tps)
+
+
+user_history = db.runQuery("""
+SELECT qh.user_id, ah.question_id, qc.question_category, qq.question, ah.correctness, ah.duration
+FROM answer_history ah
+JOIN quiz_history qh ON ah.quiz_history_id=qh.id
+JOIN quiz_question qq ON ah.question_id=qq.id
+JOIN question_category qc ON qc.id=qq.question_category_id
+WHERE qh.quiz_category_id=1
+""", ["ID_USER", "ID_QUESTION", "Question_Category", "Question_Description", "CORRECTNESS", "Duration"])
+
+tps_question_data = db.runQuery("""
+SELECT qq.id, qc.question_category, qq.question, qq.option1, qq.option2, qq.option3, qq.option4, qq.answer
+FROM quiz_question qq
+JOIN question_category qc ON qc.id=qq.question_category_id
+WHERE qq.quiz_category_id>0 AND qq.quiz_category_id<5
+""", ["ID", "Question_Category", "Questions_Descriptions", "Choice_1", "Choice_2", "Choice_3", "Choice_4", "Right_Answer"])
 
 # Menghitung jumlah soal yang telah dijawab oleh user untuk setiap kategori
 
