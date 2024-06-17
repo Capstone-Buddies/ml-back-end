@@ -2,7 +2,8 @@ from flask import Flask, request
 from flask_restful import Resource, Api
 from flask_cors import CORS
 import os
-import prediction
+import recommendation_system_tps as tps_rec
+import recommendation_system_literasi as literasi_rec
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"*": {"origins": "*"}})
@@ -11,37 +12,27 @@ api = Api(app)
 
 class Test(Resource):
     def get(self):
-        return 'Welcome to, Test App API!'
-
-    def post(self):
-        try:
-            value = request.get_json()
-            if (value):
-                return {'Post Values': value}, 201
-
-            return {"error": "Invalid format."}
-
-        except Exception as error:
-            return {'error': error}
+        return {'status': 'success', 'message': 'Welcome to, Test App API!'}
 
 
-class GetPredictionOutput(Resource):
-    def get(self):
-        return {"error": "Invalid Method."}
-
+class GetRecommendation(Resource):
     def post(self):
         try:
             data = request.get_json()
-            predict = prediction.predict_mpg(data)
-            predictOutput = predict
-            return {'predict': predictOutput}
+            if data["quizCategory"] == "TPS":
+                questions = tps_rec.get_recommendation(data["userId"])
+                return {'status': 'success', 'data': {'questions': questions}}
+            elif data["quizCategory"] == "Literasi":
+                questions = literasi_rec.get_recommendation(data["userId"])
+                return {'status': 'success', 'data': {'questions': questions}}
 
         except Exception as error:
             return {'error': error}
 
 
 api.add_resource(Test, '/')
-api.add_resource(GetPredictionOutput, '/getPredictionOutput')
+api.add_resource(GetRecommendation, '/recommendation')
+# api.add_resource(GetPredictionOutput, '/exp')
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
