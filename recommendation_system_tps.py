@@ -249,7 +249,6 @@ def recommend_questions_for_user(user_id, user_history, user_data, mistakes_per_
 
 def get_recommendation(user_id):
     # Menentukan ID user
-    user_id = 11
     last_questions = []
 
 # Menghitung jumlah soal untuk setiap kategori yang telah dijawab oleh user (untuk pengecekan)
@@ -267,6 +266,8 @@ def get_recommendation(user_id):
 
     last_questions = recommend_questions_for_user(
         user_id, user_history, user_data, mistakes_per_category, tps_question_data, last_questions)
+
+    return last_questions
 
 
 # get_recommendation(11)
