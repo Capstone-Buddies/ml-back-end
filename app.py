@@ -29,8 +29,9 @@ class GetRecommendation(Resource):
             else:
                 return {'status': 'error', 'message': 'Invalid quiz category'}, 400
 
-        except Exception as error:
-            return {'error': error}
+        except Exception:
+            return {'error': 'Internal server error'}, 500
+
 
 class ClaculateExp(Resource):
     def post(self):
@@ -40,8 +41,8 @@ class ClaculateExp(Resource):
             exp = exp_calc.calculate_exp(answer)
             return {'status': 'success', 'data': {'exp': exp}}, 200
 
-        except Exception as error:
-            return {'error': error}
+        except Exception:
+            return {'error': 'Internal server error'}, 500
 
 
 api.add_resource(Test, '/')
