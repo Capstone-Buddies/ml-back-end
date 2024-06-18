@@ -251,14 +251,14 @@ def get_recommendation(user_id):
     # Menentukan ID user
     last_questions = []
 
-# Menghitung jumlah soal untuk setiap kategori yang telah dijawab oleh user (untuk pengecekan)
+    # Menghitung jumlah soal untuk setiap kategori yang telah dijawab oleh user (untuk pengecekan)
     user_data = user_history[user_history['ID_USER'] == user_id]
     total_questions_per_category = user_data.groupby(
         'Question_Category').size()
     # print("Jumlah soal untuk setiap kategori yang telah dijawab oleh user:")
     # print(total_questions_per_category)
 
-# Menghitung jumlah soal yang salah dijawab oleh user untuk setiap kategori (untuk pengecekan)
+    # Menghitung jumlah soal yang salah dijawab oleh user untuk setiap kategori (untuk pengecekan)
     mistakes = user_data[user_data['CORRECTNESS'] == 0]
     mistakes_per_category = mistakes.groupby('Question_Category').size()
     # print("\nJumlah soal yang salah dijawab oleh user untuk setiap kategori:")
