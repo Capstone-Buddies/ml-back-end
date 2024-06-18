@@ -37,9 +37,9 @@ class ClaculateExp(Resource):
     def post(self):
         try:
             data = request.get_json()
-            answer = data["answer"]
-            exp = exp_calc.calculate_exp(answer)
-            return {'status': 'success', 'data': {'exp': exp}}, 200
+            answers = data["answers"]
+            exp_gain = round(exp_calc.calculate_exp(answers))
+            return {'status': 'success', 'data': {'exp': exp_gain}}, 200
 
         except Exception:
             return {'error': 'Internal server error'}, 500
