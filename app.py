@@ -22,10 +22,12 @@ class GetRecommendation(Resource):
             data = request.get_json()
             if data["quizCategory"] == "TPS":
                 questions = tps_rec.get_recommendation(data["userId"])
-                return {'status': 'success', 'data': {'questions': questions}}
+                return {'status': 'success', 'data': {'questions': questions}}, 200
             elif data["quizCategory"] == "Literasi":
                 questions = literasi_rec.get_recommendation(data["userId"])
-                return {'status': 'success', 'data': {'questions': questions}}
+                return {'status': 'success', 'data': {'questions': questions}}, 200
+            else:
+                return {'status': 'error', 'message': 'Invalid quiz category'}, 400
 
         except Exception as error:
             return {'error': error}
@@ -36,7 +38,7 @@ class ClaculateExp(Resource):
             data = request.get_json()
             answer = data["answer"]
             exp = exp_calc.calculate_exp(answer)
-            return {'status': 'success', 'data': {'exp': exp}}
+            return {'status': 'success', 'data': {'exp': exp}}, 200
 
         except Exception as error:
             return {'error': error}
