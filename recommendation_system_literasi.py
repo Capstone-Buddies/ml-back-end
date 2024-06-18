@@ -23,7 +23,7 @@ tps_question_data = db.runQuery("""
 SELECT qq.id, qc.question_category, qq.question, qq.option1, qq.option2, qq.option3, qq.option4, qq.answer
 FROM quiz_question qq
 JOIN question_category qc ON qc.id=qq.question_category_id
-WHERE qq.quiz_category_id>4 AND qq.quiz_category_id<8
+WHERE qq.question_category_id>4 AND qq.question_category_id<8
 """, ["ID", "Question_Category", "Questions_Descriptions", "Choice_1", "Choice_2", "Choice_3", "Choice_4", "Right_Answer"])
 
 # Menghitung jumlah soal yang telah dijawab oleh user untuk setiap kategori
