@@ -27,7 +27,7 @@ class GetRecommendation(Resource):
                 questions = literasi_rec.get_recommendation(data["userId"])
                 return {'status': 'success', 'data': {'questions': questions}}, 200
             else:
-                return {'status': 'error', 'message': 'Invalid quiz category'}, 400
+                return {'status': 'fail', 'message': 'Invalid quiz category'}, 400
 
         except Exception:
             return {'error': 'Internal server error'}, 500
