@@ -1,0 +1,8 @@
+tensorflow
+flask
+flask_restful
+flask_cors
+mysql-connector-python
+pandas
+scikit-learn
+gunicorn==21.0.1
