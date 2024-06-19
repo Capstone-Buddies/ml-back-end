@@ -10,21 +10,21 @@ import db
 # literasi_question_data = pd.read_csv(link_literasi)
 
 
-user_history = db.runQuery("""
-SELECT qh.user_id, ah.question_id, qc.question_category, qq.question, ah.correctness, ah.duration
-FROM answer_history ah
-JOIN quiz_history qh ON ah.quiz_history_id=qh.id
-JOIN quiz_question qq ON ah.question_id=qq.id
-JOIN question_category qc ON qc.id=qq.question_category_id
-WHERE qh.quiz_category_id=2
-""", ["ID_USER", "ID_QUESTION", "Question_Category", "Question_Description", "CORRECTNESS", "Duration"])
+# user_history = db.runQuery("""
+# SELECT qh.user_id, ah.question_id, qc.question_category, qq.question, ah.correctness, ah.duration
+# FROM answer_history ah
+# JOIN quiz_history qh ON ah.quiz_history_id=qh.id
+# JOIN quiz_question qq ON ah.question_id=qq.id
+# JOIN question_category qc ON qc.id=qq.question_category_id
+# WHERE qh.quiz_category_id=2
+# """, ["ID_USER", "ID_QUESTION", "Question_Category", "Question_Description", "CORRECTNESS", "Duration"])
 
-tps_question_data = db.runQuery("""
-SELECT qq.id, qc.question_category, qq.question, qq.option1, qq.option2, qq.option3, qq.option4, qq.answer
-FROM quiz_question qq
-JOIN question_category qc ON qc.id=qq.question_category_id
-WHERE qq.question_category_id>4 AND qq.question_category_id<8
-""", ["ID", "Question_Category", "Questions_Descriptions", "Choice_1", "Choice_2", "Choice_3", "Choice_4", "Right_Answer"])
+# tps_question_data = db.runQuery("""
+# SELECT qq.id, qc.question_category, qq.question, qq.option1, qq.option2, qq.option3, qq.option4, qq.answer
+# FROM quiz_question qq
+# JOIN question_category qc ON qc.id=qq.question_category_id
+# WHERE qq.question_category_id>4 AND qq.question_category_id<8
+# """, ["ID", "Question_Category", "Questions_Descriptions", "Choice_1", "Choice_2", "Choice_3", "Choice_4", "Right_Answer"])
 
 # Menghitung jumlah soal yang telah dijawab oleh user untuk setiap kategori
 
@@ -71,7 +71,7 @@ def calculate_similarity(mistakes, tps_question_data_filtered):
         category_similarities = similarity_df.loc[user_question,
                                                   same_category_indices]
         top_similar_questions[user_question] = category_similarities.nlargest(
-            10)  # mengambil top 10 yang paling mirip
+            10, columns='similarity_score')  # mengambil top 10 yang paling mirip
 
     return top_similar_questions
 
@@ -248,6 +248,22 @@ def recommend_questions_for_user(user_id, user_history, user_data, mistakes_per_
 
 
 def get_recommendation(user_id):
+    user_history = db.runQuery("""
+    SELECT qh.user_id, ah.question_id, qc.question_category, qq.question, ah.correctness, ah.duration
+    FROM answer_history ah
+    JOIN quiz_history qh ON ah.quiz_history_id=qh.id
+    JOIN quiz_question qq ON ah.question_id=qq.id
+    JOIN question_category qc ON qc.id=qq.question_category_id
+    WHERE qh.quiz_category_id=2
+    """, ["ID_USER", "ID_QUESTION", "Question_Category", "Question_Description", "CORRECTNESS", "Duration"])
+
+    tps_question_data = db.runQuery("""
+    SELECT qq.id, qc.question_category, qq.question, qq.option1, qq.option2, qq.option3, qq.option4, qq.answer
+    FROM quiz_question qq
+    JOIN question_category qc ON qc.id=qq.question_category_id
+    WHERE qq.question_category_id>4 AND qq.question_category_id<8
+    """, ["ID", "Question_Category", "Questions_Descriptions", "Choice_1", "Choice_2", "Choice_3", "Choice_4", "Right_Answer"])
+
     # Menentukan ID user
     last_questions = []
 
@@ -267,7 +283,9 @@ def get_recommendation(user_id):
     last_questions = recommend_questions_for_user(
         user_id, user_history, user_data, mistakes_per_category, tps_question_data, last_questions)
 
+    print(last_questions)
+
     return last_questions
 
 
-# get_recommendation(11)
+get_recommendation("seNKYKvEzyGO680fHlQbVcq9uI0YoMeP")
